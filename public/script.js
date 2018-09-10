@@ -67,7 +67,27 @@ $(document).on('click', '#pagination .page-item.tabs', function(e){
     changePage(startID);
     $('.loader').remove();
     currentPage = Number($(this).data('page'));
-})
+});
+
+$(document).on('click', '.list-group-item', function(e){
+    var id = $(this).data('productid');
+    $.ajax({
+        url: baseUrl + '/product/id=' + id,
+        dataType: 'json',
+        type: 'get',
+        success:function(product){
+            console.log(product);
+            $('#productModel').find('#productTitle').text(product['product_name']);
+            $('#productModel').find('#productPrice').text('$' +product['product_price']);
+            $('#productModel').find('#avail').text(product['in_stock']);
+
+            $('#productModel').modal();
+        },
+        error: function(error){
+
+        }
+    })
+});
 
 $(document).on('click', '#pagination .page-item.previous', function(e){
     if(currentPage > 1){
@@ -96,7 +116,7 @@ function changePage(startID){
     $("#productList").parent().append('<div class="loader"></div>');
     for (var i = 0; i < recPerPage; i++) {
         if(records[startID]){
-            $('#productList').append('<li class="list-group-item">'+records[startID].id+' - '+records[startID].product_name+'</li>');
+            $('#productList').append('<li class="list-group-item" data-productID="'+records[startID].id+'">'+records[startID].id+' - '+records[startID].product_name+'</li>');
             startID++
         }
     }
@@ -130,7 +150,7 @@ function getData(url){
                 .append('<li class="page-item next"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a></li>')
 
             for (var i = 0; i < recPerPage; i++) {
-                $('#productList').append('<li class="list-group-item">'+products[i].id+' - '+products[i].product_name+'</li>');
+                $('#productList').append('<li class="list-group-item" data-productID="'+products[i].id+'">'+products[i].id+' - '+products[i].product_name+'</li>');
             }
             $('.loader').remove();
         },
