@@ -124,38 +124,42 @@ function changePage(startID){
 
 
 function getData(url){
+    $("#productList").parent().append('<div class="loader"></div>');
+    setTimeout(function(){
+        $.ajax({
+            url: url,
+            type: 'get',
+            dataType: 'json',
+            success:function(products){
+                records = products;
+                totalRecords = products.length;
+                totalPages = Math.ceil(totalRecords/recPerPage);
+
+                var start = 0;
+                for (var i = 1; i <= totalPages; i++) {
+                    var classes = 'page-item tabs';
+                    if(i == 1){
+                        classes += ' active'
+                    }
+                    $('#pagination').append('<li class="'+classes+'" data-start="'+start+'" data-page="'+i+'"><a class="page-link" href="#">'+ i +'</a></li>');
+                    start = start +recPerPage;
+                }
+
+                $('#pagination')
+                    .prepend('<li class="page-item previous"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a></li>')
+                    .append('<li class="page-item next"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a></li>')
+
+                for (var i = 0; i < recPerPage; i++) {
+                    $('#productList').append('<li class="list-group-item" data-productID="'+products[i].id+'">'+products[i].id+' - '+products[i].product_name+'</li>');
+                }
+                $('.loader').remove();
+            },
+            error:function(){
+
+            }
+        })
+    }, 1000);
     $("#productList").empty();
     $("#pagination").empty();
-    $.ajax({
-        url: url,
-        type: 'get',
-        dataType: 'json',
-        success:function(products){
-            records = products;
-            totalRecords = products.length;
-            totalPages = Math.ceil(totalRecords/recPerPage);
 
-            var start = 0;
-            for (var i = 1; i <= totalPages; i++) {
-                var classes = 'page-item tabs';
-                if(i == 1){
-                    classes += ' active'
-                }
-                $('#pagination').append('<li class="'+classes+'" data-start="'+start+'" data-page="'+i+'"><a class="page-link" href="#">'+ i +'</a></li>');
-                start = start +recPerPage;
-            }
-
-            $('#pagination')
-                .prepend('<li class="page-item previous"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span><span class="sr-only">Previous</span></a></li>')
-                .append('<li class="page-item next"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span><span class="sr-only">Next</span></a></li>')
-
-            for (var i = 0; i < recPerPage; i++) {
-                $('#productList').append('<li class="list-group-item" data-productID="'+products[i].id+'">'+products[i].id+' - '+products[i].product_name+'</li>');
-            }
-            $('.loader').remove();
-        },
-        error:function(){
-
-        }
-    })
 }
