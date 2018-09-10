@@ -117,8 +117,13 @@ app.listen(app.get('port'), function(){
     console.log('Server is running on port '+app.get('port'));
 })
 
+
+
+
 function inStock(data, filter, callback){
-    if(filter == 'true'){
+    if(filter == 'all'){
+        var stock = data;
+    } else if(filter == 'true'){
         var stock = data.filter(function(item){
             return item.in_stock == true;
         });
@@ -133,7 +138,7 @@ function inStock(data, filter, callback){
 }
 
 function checkmin(data, filter, callback){
-    if(filter.match(/^[1-9]\d*(\.\d+)?$/) != null){
+    if(filter.match(/^[0-9]\d*(\.\d+)?$/) != null){
         var minPrice = Number(filter);
         var stock = data.filter(function(item){
             return item.product_price > minPrice;
@@ -145,7 +150,7 @@ function checkmin(data, filter, callback){
 }
 
 function checkmax(data, filter, callback){
-    if(filter.match(/^[1-9]\d*(\.\d+)?$/) != null){
+    if(filter.match(/^[0-9]\d*(\.\d+)?$/) != null){
         var maxPrice = Number(filter);
         var stock = data.filter(function(item){
             return item.product_price < maxPrice;
